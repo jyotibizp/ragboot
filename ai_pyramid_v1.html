@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Involvement Pyramid</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        .container {
+            width: 1400px;
+            min-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .title {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .pyramid-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .pyramid {
+            position: relative;
+            width: 500px;
+            height: 900px;
+            flex-shrink: 0;
+        }
+
+        .level {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .level:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .level-1 {
+            bottom: 0;
+            width: 450px;
+            height: 110px;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            font-size: 1.1rem;
+        }
+
+        .level-2 {
+            bottom: 135px;
+            width: 380px;
+            height: 105px;
+            background: linear-gradient(45deg, #43e97b 0%, #38f9d7 100%);
+            font-size: 1.05rem;
+        }
+
+        .level-3 {
+            bottom: 265px;
+            width: 320px;
+            height: 100px;
+            background: linear-gradient(45deg, #fa709a 0%, #fee140 100%);
+            font-size: 1rem;
+        }
+
+        .level-4 {
+            bottom: 390px;
+            width: 260px;
+            height: 95px;
+            background: linear-gradient(45deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .level-5 {
+            bottom: 510px;
+            width: 200px;
+            height: 90px;
+            background: linear-gradient(45deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .level-6 {
+            bottom: 625px;
+            width: 150px;
+            height: 85px;
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 100%);
+            color: #333;
+            font-size: 0.85rem;
+        }
+
+        .level-7 {
+            bottom: 735px;
+            width: 100px;
+            height: 80px;
+            background: linear-gradient(45deg, #a18cd1 0%, #fbc2eb 100%);
+            color: #333;
+            font-size: 0.8rem;
+        }
+
+        .arrows-info {
+            flex-grow: 1;
+            padding-left: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 900px;
+        }
+
+        .info-section {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            opacity: 0.9;
+            height: 75px;
+        }
+
+        .arrow {
+            width: 40px;
+            height: 2px;
+            background: white;
+            position: relative;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .arrow::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid white;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .info-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px;
+            color: white;
+            text-align: left;
+            flex-grow: 1;
+            height: 65px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .info-title {
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            color: #ffd700;
+            line-height: 1.1;
+        }
+
+        .tools, .examples {
+            font-size: 0.7rem;
+            line-height: 1.2;
+            margin-bottom: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tools {
+            color: #a8f0ff;
+        }
+
+        .examples {
+            color: #ffb3ba;
+        }
+
+        .tools strong, .examples strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        .legend {
+            margin-top: 1rem;
+            color: white;
+            font-size: 0.9rem;
+            text-align: left;
+            max-width: 800px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            margin-left: 25px;
+            margin-right: auto;
+        }
+
+        .legend h3 {
+            margin-top: 0;
+            color: #fff;
+            text-align: center;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1500px) {
+            .container {
+                width: 100%;
+                min-width: 1200px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                min-width: 1000px;
+                width: 1000px;
+            }
+            
+            .pyramid {
+                width: 400px;
+                height: 720px;
+            }
+            
+            .level-1 { width: 350px; height: 90px; bottom: 0; }
+            .level-2 { width: 300px; height: 85px; bottom: 110px; }
+            .level-3 { width: 250px; height: 80px; bottom: 215px; }
+            .level-4 { width: 200px; height: 75px; bottom: 315px; }
+            .level-5 { width: 150px; height: 70px; bottom: 410px; }
+            .level-6 { width: 120px; height: 65px; bottom: 500px; }
+            .level-7 { width: 90px; height: 60px; bottom: 585px; }
+            
+            .arrows-info {
+                height: 720px;
+                padding-left: 30px;
+            }
+            
+            .info-section {
+                height: 70px;
+            }
+            
+            .info-content {
+                padding: 10px;
+                height: 60px;
+            }
+            
+            .info-title {
+                font-size: 0.75rem;
+            }
+            
+            .tools, .examples {
+                font-size: 0.65rem;
+            }
+            
+            .info-title {
+                font-size: 0.8rem;
+                margin-bottom: 5px;
+            }
+            
+            .tools, .examples {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: left;" class="title">AI Model Involvement Pyramid</h1>
+        
+        <div class="pyramid-container">
+            <div class="pyramid">
+                <div class="level level-7">
+                    Foundation Model Builders
+                </div>
+                
+                <div class="level level-6">
+                    Architecture Researchers
+                </div>
+                
+                <div class="level level-5">
+                    Fine-tuning Specialists
+                </div>
+                
+                <div class="level level-4">
+                    Custom Model Developers
+                </div>
+                
+                <div class="level level-3">
+                    RAG & Tool Builders
+                </div>
+                
+                <div class="level level-2">
+                    Few-shot Prompting
+                </div>
+                
+                <div class="level level-1">
+                    Basic Prompting
+                </div>
+            </div>
+
+            <div class="arrows-info">
+                <div class="info-section">
+                    <div class="arrow"></div>
+                    <div class="info-content">
+                        <div class="info-title">Foundation Model Builders</div>
+                        <div class="tools"><strong>Tools:</strong> Custom distributed training, TPU/H100 clusters, massive datasets (Common Crawl, Books3)</div>
+                        <div class="examples"><strong>Examples:</strong> OpenAI (GPT-4), Anthropic (Claude), Meta (Llama), Google (Gemini)</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="arrow"></div>
+                    <div class="info-content">
+                        <div class="info-title">Architecture Researchers</div>
+                        <div class="tools"><strong>Tools:</strong> PyTorch, JAX, Flax, research computing clusters, academic partnerships</div>
+                        <div class="examples"><strong>Examples:</strong> Transformer creators, Mamba/SSM researchers, MoE architects, attention mechanism innovators</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="arrow"></div>
+                    <div class="info-content">
+                        <div class="info-title">Fine-tuning Specialists</div>
+                        <div class="tools"><strong>Tools:</strong> LoRA, QLoRA, Unsloth, Axolotl, DeepSpeed, PEFT, Modal, RunPod</div>
+                        <div class="examples"><strong>Examples:</strong> Code Llama creators, Alpaca team, Vicuna developers, medical/legal model specialists</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="arrow"></div>
+                    <div class="info-content">
+                        <div class="info-title">Custom Model Developers</div>
+                        <div class="tools"><strong>Tools:</strong> Hugging Face Transformers, vLLM, Ollama, Docker, cloud platforms (AWS, GCP)</div>
+                        <div class="examples"><strong>Examples:</strong> Enterprise AI teams, startup ML engineers, domain-specific chatbot builders</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="arrow"></div>
+                    <div class="info-content">
+                        <div class="info-title">RAG & Tool Builders</div>
+                        <div class="tools"><strong>Tools:</strong> LangChain, LlamaIndex, ChromaDB, Pinecone, Weaviate, AutoGPT, CrewAI</div>
+                        <div class="examples"><strong>Examples:</strong> Full-stack developers, AI application builders, document Q&A creators, agent developers</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="arrow"></div>
+                    <div class="info-content">
+                        <div class="info-title">Few-shot Prompting</div>
+                        <div class="tools"><strong>Tools:</strong> OpenAI Playground, Anthropic Console, prompt libraries, Chain-of-Thought templates</div>
+                        <div class="examples"><strong>Examples:</strong> Power users, content creators, researchers, advanced ChatGPT/Claude users</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="arrow"></div>
+                    <div class="info-content">
+                        <div class="info-title">Basic Prompting</div>
+                        <div class="tools"><strong>Tools:</strong> ChatGPT, Claude, Gemini, Copilot, mobile apps, web interfaces</div>
+                        <div class="examples"><strong>Examples:</strong> General public, students, office workers, casual users asking questions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <h3>Understanding the Pyramid</h3>
+            <p><strong>Population Size:</strong> The width represents how many people are involved at each level - millions use basic prompting, while only a handful build foundation models.</p>
+            <p><strong>Technical Complexity:</strong> As you move up, the technical expertise, computational resources, and specialized knowledge required increases dramatically.</p>
+            <p><strong>Impact & Control:</strong> Higher levels have more influence over the fundamental capabilities and direction of AI technology.</p>
+        </div>
+    </div>
+
+    <script>
+        // Add subtle animation on load
+        window.addEventListener('load', () => {
+            const levels = document.querySelectorAll('.level');
+            const infoSections = document.querySelectorAll('.info-section');
+            
+            levels.forEach((level, index) => {
+                setTimeout(() => {
+                    level.style.opacity = '0';
+                    level.style.transform = 'translateX(-50%) translateY(20px)';
+                    level.style.transition = 'all 0.6s ease';
+                    
+                    setTimeout(() => {
+                        level.style.opacity = '1';
+                        level.style.transform = 'translateX(-50%) translateY(0)';
+                    }, 100);
+                }, index * 100);
+            });
+
+            infoSections.forEach((section, index) => {
+                setTimeout(() => {
+                    section.style.opacity = '0';
+                    section.style.transform = 'translateX(20px)';
+                    section.style.transition = 'all 0.6s ease';
+                    
+                    setTimeout(() => {
+                        section.style.opacity = '0.9';
+                        section.style.transform = 'translateX(0)';
+                    }, 100);
+                }, (index + 1) * 150);
+            });
+        });
+
+        // Hover effects for matching pyramid levels with info sections
+        const levels = document.querySelectorAll('.level');
+        const infoSections = document.querySelectorAll('.info-section');
+
+        levels.forEach((level, index) => {
+            level.addEventListener('mouseenter', () => {
+                const correspondingInfo = infoSections[6 - index]; // Reverse order
+                correspondingInfo.style.opacity = '1';
+                correspondingInfo.style.transform = 'scale(1.02)';
+            });
+
+            level.addEventListener('mouseleave', () => {
+                const correspondingInfo = infoSections[6 - index];
+                correspondingInfo.style.opacity = '0.9';
+                correspondingInfo.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
